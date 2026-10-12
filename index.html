@@ -1,0 +1,1006 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" id="htmlRoot">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="pageTitle">نظام التصميم الهندسي والصوتي</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #0f172a;
+            --bg-card: #1e293b;
+            --primary: #3b82f6;
+            --primary-hover: #2563eb;
+            --accent: #10b981;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: #334155;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Cairo', 'Inter', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            line-height: 1.6;
+            padding: 20px;
+            transition: direction 0.3s;
+        }
+
+        [dir="ltr"] body { font-family: 'Inter', 'Cairo', sans-serif; }
+
+        .container { max-width: 1300px; margin: 0 auto; }
+
+        /* شريط تبديل اللغة */
+        .lang-bar {
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .lang-btn {
+            padding: 8px 16px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .lang-btn:hover { border-color: var(--primary); color: var(--text-main); }
+        .lang-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 25px 20px;
+            background: linear-gradient(135deg, #1e3a8a, #0f172a);
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+        }
+
+        header h1 { font-size: 2.2rem; margin-bottom: 10px; color: #fff; }
+        header p { font-size: 1.1rem; color: var(--text-muted); }
+
+        .layout-grid {
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            gap: 25px;
+        }
+
+        @media (max-width: 1000px) { .layout-grid { grid-template-columns: 1fr; } }
+
+        .panel {
+            background: var(--bg-card);
+            padding: 25px;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+
+        .input-group { margin-bottom: 15px; }
+        .input-group label { display: block; margin-bottom: 8px; font-weight: 600; color: var(--primary); font-size: 0.95rem; }
+        
+        .input-group select, .input-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 1rem;
+            background: #0f172a;
+            color: #fff;
+            transition: all 0.3s;
+        }
+
+        .input-group select:focus, .input-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+        }
+
+        .btn-group { display: flex; gap: 10px; margin-top: 15px; }
+
+        button {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-family: inherit;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-primary { background-color: var(--primary); color: white; }
+        .btn-primary:hover { background-color: var(--primary-hover); }
+        .btn-accent { background-color: var(--accent); color: white; }
+        .btn-accent:hover { background-color: #059669; }
+
+        #reportOutput { display: none; }
+        #reportOutput.active { display: block; }
+
+        .report-section { margin-bottom: 35px; page-break-inside: avoid; }
+        
+        .report-section h3 {
+            font-size: 1.4rem;
+            color: var(--primary);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-inline-start: 4px solid var(--primary);
+            padding-inline-start: 10px;
+        }
+
+        .data-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; }
+
+        .data-card {
+            background: #0f172a;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            border: 1px solid var(--border);
+        }
+
+        .data-card .value { font-size: 1.4rem; font-weight: 700; color: var(--accent); }
+        .data-card .label { font-size: 0.9rem; color: var(--text-muted); margin-top: 5px; }
+
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 0.9rem; }
+        th, td { padding: 12px; text-align: start; border-bottom: 1px solid var(--border); }
+        th { background-color: var(--primary); color: white; }
+        tr:hover { background-color: rgba(255,255,255,0.05); }
+
+        .gear-list { list-style: none; }
+        .gear-list li {
+            background: #0f172a;
+            border: 1px solid var(--border);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+        }
+        .gear-list .gear-name { font-weight: 700; color: #fff; }
+        .gear-list .gear-desc { font-size: 0.85rem; color: var(--text-muted); }
+        .gear-list .gear-tag {
+            background: var(--primary);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+        .gear-list .gear-tag.essential { background: var(--danger); }
+
+        .warning-box {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid var(--danger);
+            color: #fca5a5;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-size: 0.95rem;
+        }
+
+        .success-box {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid var(--accent);
+            color: #6ee7b7;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-size: 0.95rem;
+        }
+
+        .graph-container {
+            background: #111827;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            padding: 20px;
+            margin-top: 15px;
+            text-align: center;
+        }
+        #modeGraph { width: 100%; height: 250px; }
+
+        .checklist { list-style: none; }
+        .checklist li {
+            background: #0f172a;
+            border: 1px solid var(--border);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .checklist li:hover { border-color: var(--primary); }
+        .checklist li.completed { opacity: 0.6; text-decoration: line-through; }
+        .checklist input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            accent-color: var(--accent);
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        @media print {
+            body { background: #fff; color: #000; padding: 0; font-size: 12pt; }
+            .container { max-width: 100%; }
+            header, .panel:first-of-type, .btn-group, #printBtn, .lang-bar { display: none !important; }
+            .layout-grid { display: block; }
+            .panel { background: #fff; border: none; box-shadow: none; padding: 0; }
+            #reportOutput { display: block !important; }
+            .report-section h3 { color: #000; border-inline-start: 3px solid #000; page-break-after: avoid; }
+            .data-card { background: #f8f9fa; border: 1px solid #ccc; color: #000; }
+            .data-card .value { color: #000; }
+            .data-card .label { color: #333; }
+            th { background-color: #e5e7eb; color: #000; border: 1px solid #000; }
+            td { border: 1px solid #000; }
+            .gear-list li { background: #fff; border: 1px solid #ccc; }
+            .gear-list .gear-name { color: #000; }
+            .gear-tag { background: #000 !important; color: #fff !important; }
+            .warning-box, .success-box { background: #fff; border: 2px solid #000; color: #000; }
+            .graph-container { background: #fff; border: 1px solid #000; page-break-inside: avoid; }
+            #modeGraph { filter: invert(1); }
+            .checklist li { background: #fff; border: 1px solid #ccc; }
+            .checklist li.completed { opacity: 1; text-decoration: none; }
+            .page-break { page-break-before: always; }
+            @page { margin: 2cm; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- شريط تبديل اللغة -->
+    <div class="lang-bar">
+        <button class="lang-btn active" data-lang="ar" onclick="setLanguage('ar')">🇸🇦 العربية</button>
+        <button class="lang-btn" data-lang="en" onclick="setLanguage('en')">🇬🇧 English</button>
+        <button class="lang-btn" data-lang="fr" onclick="setLanguage('fr')">🇫🇷 Français</button>
+    </div>
+
+    <header>
+        <h1 data-i18n="headerTitle">🏗️ المصمم الهندسي والصوتي المتكامل</h1>
+        <p data-i18n="headerSubtitle">تحليل مودالي بصري + نسب غرفة + قائمة تحقق + تقرير PDF احترافي</p>
+    </header>
+
+    <div class="layout-grid">
+        <!-- لوحة التحكم -->
+        <div class="panel">
+            <h2 style="color: var(--primary); margin-bottom: 20px;" data-i18n="settingsTitle">⚙️ إعدادات التصميم</h2>
+            
+            <div class="input-group">
+                <label data-i18n="labelUseCase">الاستخدام الأساسي</label>
+                <select id="useCase">
+                    <option value="voiceover" data-i18n="useVoiceover">تعليق صوتي وبودكاست</option>
+                    <option value="music" selected data-i18n="useMusic">إنتاج موسيقي وتسجيل</option>
+                    <option value="mixing" data-i18n="useMixing">ميكساج وماسترينغ</option>
+                    <option value="streaming" data-i18n="useStreaming">بث مباشر وصناعة محتوى</option>
+                </select>
+            </div>
+
+            <div class="input-group">
+                <label data-i18n="labelBudget">مستوى الميزانية</label>
+                <select id="budget">
+                    <option value="entry" data-i18n="budgetEntry">اقتصادية (مبتدئ)</option>
+                    <option value="mid" selected data-i18n="budgetMid">متوسطة (احترافي)</option>
+                    <option value="pro" data-i18n="budgetPro">عالية (استوديو تجاري)</option>
+                </select>
+            </div>
+
+            <div class="input-group">
+                <label data-i18n="labelDimensions">أبعاد الغرفة (م)</label>
+                <div style="display: flex; gap: 10px;">
+                    <input type="number" id="roomLength" value="4.0" step="0.1" data-i18n-placeholder="phLength" placeholder="الطول">
+                    <input type="number" id="roomWidth" value="4.0" step="0.1" data-i18n-placeholder="phWidth" placeholder="العرض">
+                    <input type="number" id="roomHeight" value="3.0" step="0.1" data-i18n-placeholder="phHeight" placeholder="الارتفاع">
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label data-i18n="labelMicCount">عدد الميكروفونات (المدخلات)</label>
+                <select id="micCount">
+                    <option value="1" data-i18n="mic1">1 ميكروفون (فردي)</option>
+                    <option value="2" data-i18n="mic2">2 ميكروفون (ثنائي)</option>
+                    <option value="4" selected data-i18n="mic4">4 ميكروفونات (فرقة/بودكاست)</option>
+                </select>
+            </div>
+
+            <div class="btn-group">
+                <button class="btn-primary" onclick="generateStudio()">
+                    <span>📐</span> <span data-i18n="btnAnalyze">تحليل وتصميم</span>
+                </button>
+                <button class="btn-accent" id="printBtn" onclick="window.print()" style="display: none;">
+                    <span>📄</span> <span data-i18n="btnPrint">حفظ PDF</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- لوحة النتائج -->
+        <div class="panel" id="outputPanel">
+            <div style="text-align: center; padding: 50px; color: var(--text-muted);">
+                <h2 data-i18n="emptyState">👈 اضغط على "تحليل وتصميم" لبدء التصميم</h2>
+                <p data-i18n="emptyStateSub">سيتم رسم المخطط، تحليل الأنماط، وتوليد التقرير المفصل.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // ==========================================
+    // 1. قاموس الترجمات (Translations Dictionary)
+    // ==========================================
+    const translations = {
+        ar: {
+            pageTitle: "نظام التصميم الهندسي والصوتي",
+            headerTitle: "🏗️ المصمم الهندسي والصوتي المتكامل",
+            headerSubtitle: "تحليل مودالي بصري + نسب غرفة + قائمة تحقق + تقرير PDF احترافي",
+            settingsTitle: "⚙️ إعدادات التصميم",
+            labelUseCase: "الاستخدام الأساسي",
+            useVoiceover: "تعليق صوتي وبودكاست",
+            useMusic: "إنتاج موسيقي وتسجيل",
+            useMixing: "ميكساج وماسترينغ",
+            useStreaming: "بث مباشر وصناعة محتوى",
+            labelBudget: "مستوى الميزانية",
+            budgetEntry: "اقتصادية (مبتدئ)",
+            budgetMid: "متوسطة (احترافي)",
+            budgetPro: "عالية (استوديو تجاري)",
+            labelDimensions: "أبعاد الغرفة (م)",
+            phLength: "الطول", phWidth: "العرض", phHeight: "الارتفاع",
+            labelMicCount: "عدد الميكروفونات (المدخلات)",
+            mic1: "1 ميكروفون (فردي)", mic2: "2 ميكروفون (ثنائي)", mic4: "4 ميكروفونات (فرقة/بودكاست)",
+            btnAnalyze: "تحليل وتصميم", btnPrint: "حفظ PDF",
+            emptyState: "👈 اضغط على \"تحليل وتصميم\" لبدء التصميم",
+            emptyStateSub: "سيتم رسم المخطط، تحليل الأنماط، وتوليد التقرير المفصل.",
+            // التقرير
+            secProjectSummary: "📋 1. ملخص المشروع",
+            secAcousticAnalysis: "📊 2. التحليل الصوتي الهندسي",
+            secTreatmentQty: "🧱 3. كميات المعالجة الصوتية المطلوبة",
+            secGearList: "🎛️ 4. قائمة المعدات الموصى بها",
+            secChecklist: "✅ 5. قائمة التحقق التفاعلية للتركيب",
+            // بطاقات البيانات
+            labelDimensionsShort: "الأبعاد (م)",
+            labelRoomVolume: "حجم الغرفة",
+            labelTotalArea: "المساحة الكلية",
+            labelMicNumber: "عدد الميكروفونات",
+            labelAvgRt60: "متوسط RT60",
+            labelSchroeder: "تردد شرودر",
+            labelRatioStatus: "حالة النسب",
+            // الجداول
+            tableFreqHeader: "التردد (Hz)",
+            tableRt60Header: "زمن الترديد (RT60)",
+            tableRatingHeader: "التقييم",
+            ratingExcellent: "ممتاز", ratingGood: "جيد", ratingNeedsImprovement: "يحتاج تحسين",
+            // الرسم
+            graphTitle: "مخطط الأنماط المحورية (Axial Modes) - حتى 300Hz",
+            graphLegendLength: "طولي", graphLegendWidth: "عرضي", graphLegendHeight: "رأسي",
+            // المواد
+            materialFoam: "ألواح فوم هرمي (50x50 سم)",
+            materialFoamDesc: "لتغطية 40% من مساحة الجدران",
+            materialFoamUnit: "لوح",
+            materialBass: "مصائد باس (Bass Traps)",
+            materialBassDesc: "لتركيبها في الزوايا الأربع للغرفة",
+            materialBassUnit: "قطع",
+            // المعدات
+            tagEssential: "أساسي", tagRequired: "ضروري", tagRecommended: "موصى به",
+            gearMicDesc: "الميكروفون الأساسي",
+            gearInterfaceDesc: "واجهة الصوت (Audio Interface)",
+            gearMonitorsDesc: "المراقبة الصوتية (Monitors)",
+            gearTreatmentDesc: "المعالجة الصوتية",
+            gearExtraDesc: "إكسسوارات إضافية",
+            // قائمة التحقق
+            checkBassTraps: "تركيب مصائد الباس في الزوايا الأربع.",
+            checkFoam: "تغطية الجدران بألواح الفوم الهرمي (40% من المساحة).",
+            checkCarpet: "فرش الأرضية بالسجاد العازل.",
+            checkXlr: "توصيل الميكروفون بالانترفيس بكابل XLR.",
+            checkUsb: "توصيل الانترفيس بالكمبيوتر بكابل USB.",
+            checkMonitors: "توصيل سماعات المراقبة بالانترفيس.",
+            checkGain: "ضبط مستوى Gain على الانترفيس (منطقة -12dB).",
+            checkTest: "تسجيل اختبار وضبط المعالجة الصوتية في برنامج DAW.",
+            // التحذيرات
+            warnRatioTitle: "تحذير هندسي:",
+            warnRatioMsg: "أبعاد الغرفة بعيدة عن النسب المثالية (Sepmeyer). هذا قد يسبب تراكب الأنماط الصوتية. يُنصح باستخدام مصائد باس إضافية.",
+            okRatioTitle: "نسب الغرفة ممتازة:",
+            okRatioMsg: "أبعاد الغرفة متناسقة وتوزع الأنماط الصوتية بشكل متساوٍ.",
+            ratioLabel: "تحليل النسب:",
+            ratioStatusExcellent: "ممتاز",
+            ratioStatusWarning: "تحذير",
+            reportTitle: "تقرير التصميم الهندسي والصوتي للاستوديو",
+            pageOf: "صفحة"
+        },
+        en: {
+            pageTitle: "Studio Acoustic & Design System",
+            headerTitle: "🏗️ Integrated Studio Designer",
+            headerSubtitle: "Visual Modal Analysis + Room Ratios + Checklist + Professional PDF Report",
+            settingsTitle: "⚙️ Design Settings",
+            labelUseCase: "Primary Use Case",
+            useVoiceover: "Voiceover & Podcast",
+            useMusic: "Music Production",
+            useMixing: "Mixing & Mastering",
+            useStreaming: "Streaming & Content Creation",
+            labelBudget: "Budget Level",
+            budgetEntry: "Economic (Beginner)",
+            budgetMid: "Mid-Range (Pro)",
+            budgetPro: "High (Commercial Studio)",
+            labelDimensions: "Room Dimensions (m)",
+            phLength: "Length", phWidth: "Width", phHeight: "Height",
+            labelMicCount: "Number of Microphones (Inputs)",
+            mic1: "1 Mic (Solo)", mic2: "2 Mics (Duo)", mic4: "4 Mics (Band/Podcast)",
+            btnAnalyze: "Analyze & Design", btnPrint: "Save PDF",
+            emptyState: "👈 Click \"Analyze & Design\" to start",
+            emptyStateSub: "The layout will be drawn, modes analyzed, and full report generated.",
+            secProjectSummary: "📋 1. Project Summary",
+            secAcousticAnalysis: "📊 2. Acoustic Engineering Analysis",
+            secTreatmentQty: "🧱 3. Required Acoustic Treatment Quantities",
+            secGearList: "🎛️ 4. Recommended Gear List",
+            secChecklist: "✅ 5. Interactive Setup Checklist",
+            labelDimensionsShort: "Dimensions (m)",
+            labelRoomVolume: "Room Volume",
+            labelTotalArea: "Total Surface Area",
+            labelMicNumber: "Number of Mics",
+            labelAvgRt60: "Average RT60",
+            labelSchroeder: "Schroeder Frequency",
+            labelRatioStatus: "Ratio Status",
+            tableFreqHeader: "Frequency (Hz)",
+            tableRt60Header: "Reverberation Time (RT60)",
+            tableRatingHeader: "Rating",
+            ratingExcellent: "Excellent", ratingGood: "Good", ratingNeedsImprovement: "Needs Improvement",
+            graphTitle: "Axial Modes Chart (up to 300Hz)",
+            graphLegendLength: "Length", graphLegendWidth: "Width", graphLegendHeight: "Height",
+            materialFoam: "Pyramidal Foam Panels (50x50 cm)",
+            materialFoamDesc: "To cover 40% of wall area",
+            materialFoamUnit: "panels",
+            materialBass: "Bass Traps",
+            materialBassDesc: "For installation in all 4 corners",
+            materialBassUnit: "units",
+            tagEssential: "Essential", tagRequired: "Required", tagRecommended: "Recommended",
+            gearMicDesc: "Primary Microphone",
+            gearInterfaceDesc: "Audio Interface",
+            gearMonitorsDesc: "Studio Monitors",
+            gearTreatmentDesc: "Acoustic Treatment",
+            gearExtraDesc: "Additional Accessories",
+            checkBassTraps: "Install bass traps in the 4 corners.",
+            checkFoam: "Cover walls with pyramidal foam (40% of area).",
+            checkCarpet: "Lay acoustic carpet on the floor.",
+            checkXlr: "Connect microphone to interface via XLR cable.",
+            checkUsb: "Connect interface to computer via USB.",
+            checkMonitors: "Connect studio monitors to the interface.",
+            checkGain: "Set Gain level on interface (around -12dB).",
+            checkTest: "Record a test and adjust processing in DAW.",
+            warnRatioTitle: "Engineering Warning:",
+            warnRatioMsg: "Room dimensions deviate from ideal Sepmeyer ratios. This may cause modal overlap. Additional bass traps recommended.",
+            okRatioTitle: "Excellent Room Ratios:",
+            okRatioMsg: "Room dimensions are well-proportioned and distribute acoustic modes evenly.",
+            ratioLabel: "Ratio Analysis:",
+            ratioStatusExcellent: "Excellent",
+            ratioStatusWarning: "Warning",
+            reportTitle: "Studio Acoustic & Design Report",
+            pageOf: "Page"
+        },
+        fr: {
+            pageTitle: "Système de Conception Acoustique de Studio",
+            headerTitle: "🏗️ Concepteur de Studio Intégré",
+            headerSubtitle: "Analyse Modale Visuelle + Ratios de Pièce + Checklist + Rapport PDF Professionnel",
+            settingsTitle: "⚙️ Paramètres de Conception",
+            labelUseCase: "Utilisation Principale",
+            useVoiceover: "Voix-off et Podcast",
+            useMusic: "Production Musicale",
+            useMixing: "Mixage et Mastering",
+            useStreaming: "Streaming et Création de Contenu",
+            labelBudget: "Niveau de Budget",
+            budgetEntry: "Économique (Débutant)",
+            budgetMid: "Milieu de Gamme (Pro)",
+            budgetPro: "Élevé (Studio Commercial)",
+            labelDimensions: "Dimensions de la Pièce (m)",
+            phLength: "Longueur", phWidth: "Largeur", phHeight: "Hauteur",
+            labelMicCount: "Nombre de Microphones (Entrées)",
+            mic1: "1 Micro (Solo)", mic2: "2 Micros (Duo)", mic4: "4 Micros (Groupe/Podcast)",
+            btnAnalyze: "Analyser et Concevoir", btnPrint: "Enregistrer PDF",
+            emptyState: "👈 Cliquez sur \"Analyser et Concevoir\" pour commencer",
+            emptyStateSub: "Le plan sera dessiné, les modes analysés, et le rapport complet généré.",
+            secProjectSummary: "📋 1. Résumé du Projet",
+            secAcousticAnalysis: "📊 2. Analyse Acoustique",
+            secTreatmentQty: "🧱 3. Quantités de Traitement Acoustique Requises",
+            secGearList: "🎛️ 4. Liste du Matériel Recommandé",
+            secChecklist: "✅ 5. Checklist Interactive d'Installation",
+            labelDimensionsShort: "Dimensions (m)",
+            labelRoomVolume: "Volume de la Pièce",
+            labelTotalArea: "Surface Totale",
+            labelMicNumber: "Nombre de Micros",
+            labelAvgRt60: "RT60 Moyen",
+            labelSchroeder: "Fréquence de Schroeder",
+            labelRatioStatus: "État des Ratios",
+            tableFreqHeader: "Fréquence (Hz)",
+            tableRt60Header: "Temps de Réverbération (RT60)",
+            tableRatingHeader: "Évaluation",
+            ratingExcellent: "Excellent", ratingGood: "Bon", ratingNeedsImprovement: "À Améliorer",
+            graphTitle: "Graphique des Modes Axiaux (jusqu'à 300Hz)",
+            graphLegendLength: "Longueur", graphLegendWidth: "Largeur", graphLegendHeight: "Hauteur",
+            materialFoam: "Panneaux de Mousse Pyramidale (50x50 cm)",
+            materialFoamDesc: "Pour couvrir 40% de la surface des murs",
+            materialFoamUnit: "panneaux",
+            materialBass: "Pièges à Basses (Bass Traps)",
+            materialBassDesc: "Pour installation dans les 4 coins",
+            materialBassUnit: "unités",
+            tagEssential: "Essentiel", tagRequired: "Requis", tagRecommended: "Recommandé",
+            gearMicDesc: "Microphone Principal",
+            gearInterfaceDesc: "Interface Audio",
+            gearMonitorsDesc: "Moniteurs de Studio",
+            gearTreatmentDesc: "Traitement Acoustique",
+            gearExtraDesc: "Accessoires Supplémentaires",
+            checkBassTraps: "Installer les pièges à basses dans les 4 coins.",
+            checkFoam: "Couvrir les murs avec de la mousse pyramidale (40%).",
+            checkCarpet: "Poser une moquette acoustique au sol.",
+            checkXlr: "Connecter le micro à l'interface via câble XLR.",
+            checkUsb: "Connecter l'interface à l'ordinateur via USB.",
+            checkMonitors: "Connecter les moniteurs à l'interface.",
+            checkGain: "Régler le Gain sur l'interface (environ -12dB).",
+            checkTest: "Enregistrer un test et ajuster le traitement dans le DAW.",
+            warnRatioTitle: "Avertissement Technique:",
+            warnRatioMsg: "Les dimensions de la pièce s'écartent des ratios Sepmeyer idéaux. Cela peut causer un chevauchement modal. Pièges à basses supplémentaires recommandés.",
+            okRatioTitle: "Excellents Ratios:",
+            okRatioMsg: "Les dimensions de la pièce sont bien proportionnées et répartissent uniformément les modes acoustiques.",
+            ratioLabel: "Analyse des Ratios:",
+            ratioStatusExcellent: "Excellent",
+            ratioStatusWarning: "Avertissement",
+            reportTitle: "Rapport de Conception Acoustique du Studio",
+            pageOf: "Page"
+        }
+    };
+
+    // ==========================================
+    // 2. قاعدة بيانات المعدات (مع ترجمات)
+    // ==========================================
+    const gearDB = {
+        voiceover: {
+            entry: { 
+                mic: {ar:"Samson Q2U", en:"Samson Q2U", fr:"Samson Q2U"}, 
+                interface: {ar:"Behringer UMC22", en:"Behringer UMC22", fr:"Behringer UMC22"}, 
+                monitors: {ar:"Audio-Technica ATH-M20x", en:"Audio-Technica ATH-M20x", fr:"Audio-Technica ATH-M20x"}, 
+                extra: {ar:"حامل مكتبي + فلتر بوب", en:"Desk Stand + Pop Filter", fr:"Support de Bureau + Filtre Anti-Pop"} 
+            },
+            mid: { 
+                mic: {ar:"Shure SM7B", en:"Shure SM7B", fr:"Shure SM7B"}, 
+                interface: {ar:"Focusrite Scarlett Solo", en:"Focusrite Scarlett Solo", fr:"Focusrite Scarlett Solo"}, 
+                monitors: {ar:"Yamaha HS5", en:"Yamaha HS5", fr:"Yamaha HS5"}, 
+                extra: {ar:"حامل ذراع + كابل XLR", en:"Boom Arm + XLR Cable", fr:"Bras de Micro + Câble XLR"} 
+            },
+            pro: { 
+                mic: {ar:"Neumann TLM 103", en:"Neumann TLM 103", fr:"Neumann TLM 103"}, 
+                interface: {ar:"Universal Audio Apollo Twin X", en:"Universal Audio Apollo Twin X", fr:"Universal Audio Apollo Twin X"}, 
+                monitors: {ar:"Genelec 8030C", en:"Genelec 8030C", fr:"Genelec 8030C"}, 
+                extra: {ar:"Cloudlifter + معالج صوتي", en:"Cloudlifter + Vocal Processor", fr:"Cloudlifter + Processeur Vocal"} 
+            }
+        },
+        music: {
+            entry: { 
+                mic: {ar:"Audio-Technica AT2020", en:"Audio-Technica AT2020", fr:"Audio-Technica AT2020"}, 
+                interface: {ar:"Focusrite Scarlett 2i2", en:"Focusrite Scarlett 2i2", fr:"Focusrite Scarlett 2i2"}, 
+                monitors: {ar:"Presonus Eris E3.5", en:"Presonus Eris E3.5", fr:"Presonus Eris E3.5"}, 
+                extra: {ar:"حامل ميكروفون + فلتر بوب", en:"Mic Stand + Pop Filter", fr:"Support Micro + Filtre Anti-Pop"} 
+            },
+            mid: { 
+                mic: {ar:"Rode NT1 5th Gen", en:"Rode NT1 5th Gen", fr:"Rode NT1 5th Gen"}, 
+                interface: {ar:"Audient iD14 MKII", en:"Audient iD14 MKII", fr:"Audient iD14 MKII"}, 
+                monitors: {ar:"Yamaha HS7", en:"Yamaha HS7", fr:"Yamaha HS7"}, 
+                extra: {ar:"حامل ذراع + كابلات TRS", en:"Boom Arm + TRS Cables", fr:"Bras de Micro + Câbles TRS"} 
+            },
+            pro: { 
+                mic: {ar:"Neumann U87 Ai", en:"Neumann U87 Ai", fr:"Neumann U87 Ai"}, 
+                interface: {ar:"Universal Audio Apollo x4", en:"Universal Audio Apollo x4", fr:"Universal Audio Apollo x4"}, 
+                monitors: {ar:"Focal Shape 65", en:"Focal Shape 65", fr:"Focal Shape 65"}, 
+                extra: {ar:"معايرة غرفة + موزعات خشبية", en:"Room Calibration + Wood Diffusers", fr:"Calibration de Pièce + Diffuseurs Bois"} 
+            }
+        },
+        mixing: {
+            entry: { 
+                mic: {ar:"غير ضروري", en:"Not Required", fr:"Non Requis"}, 
+                interface: {ar:"Focusrite Scarlett Solo", en:"Focusrite Scarlett Solo", fr:"Focusrite Scarlett Solo"}, 
+                monitors: {ar:"Audio-Technica ATH-M50x", en:"Audio-Technica ATH-M50x", fr:"Audio-Technica ATH-M50x"}, 
+                extra: {ar:"برنامج REW للمعايرة", en:"REW Software for Calibration", fr:"Logiciel REW pour Calibration"} 
+            },
+            mid: { 
+                mic: {ar:"Behringer ECM8000 (قياسي)", en:"Behringer ECM8000 (Measurement)", fr:"Behringer ECM8000 (Mesure)"}, 
+                interface: {ar:"Focusrite Scarlett 2i2", en:"Focusrite Scarlett 2i2", fr:"Focusrite Scarlett 2i2"}, 
+                monitors: {ar:"Yamaha HS8", en:"Yamaha HS8", fr:"Yamaha HS8"}, 
+                extra: {ar:"Sonarworks SoundID Reference", en:"Sonarworks SoundID Reference", fr:"Sonarworks SoundID Reference"} 
+            },
+            pro: { 
+                mic: {ar:"Earthworks M30", en:"Earthworks M30", fr:"Earthworks M30"}, 
+                interface: {ar:"RME Fireface UCX II", en:"RME Fireface UCX II", fr:"RME Fireface UCX II"}, 
+                monitors: {ar:"Genelec 8341A", en:"Genelec 8341A", fr:"Genelec 8341A"}, 
+                extra: {ar:"معالجة صوتية رقمية (DSP)", en:"Digital Signal Processing (DSP)", fr:"Traitement Numérique du Signal (DSP)"} 
+            }
+        },
+        streaming: {
+            entry: { 
+                mic: {ar:"Fifine K669B", en:"Fifine K669B", fr:"Fifine K669B"}, 
+                interface: {ar:"لا يحتاج (USB)", en:"Not Required (USB)", fr:"Non Requis (USB)"}, 
+                monitors: {ar:"HyperX Cloud II", en:"HyperX Cloud II", fr:"HyperX Cloud II"}, 
+                extra: {ar:"ذراع ميكروفون + فوم للجدار", en:"Mic Arm + Wall Foam", fr:"Bras de Micro + Mousse Murale"} 
+            },
+            mid: { 
+                mic: {ar:"Shure MV7", en:"Shure MV7", fr:"Shure MV7"}, 
+                interface: {ar:"Behringer UMC202HD", en:"Behringer UMC202HD", fr:"Behringer UMC202HD"}, 
+                monitors: {ar:"Beyerdynamic DT 770 Pro", en:"Beyerdynamic DT 770 Pro", fr:"Beyerdynamic DT 770 Pro"}, 
+                extra: {ar:"ميكسر بث صغير", en:"Small Streaming Mixer", fr:"Petite Table de Mixage Streaming"} 
+            },
+            pro: { 
+                mic: {ar:"Shure SM7B + Cloudlifter", en:"Shure SM7B + Cloudlifter", fr:"Shure SM7B + Cloudlifter"}, 
+                interface: {ar:"Rodecaster Pro II", en:"Rodecaster Pro II", fr:"Rodecaster Pro II"}, 
+                monitors: {ar:"Sennheiser HD 600", en:"Sennheiser HD 600", fr:"Sennheiser HD 600"}, 
+                extra: {ar:"إضاءة احترافية + كاميرا", en:"Professional Lighting + Camera", fr:"Éclairage Professionnel + Caméra"} 
+            }
+        }
+    };
+
+    const absorptionCoeffs = {
+        foamPyramid: [0.15, 0.35, 0.65, 0.85, 0.95, 0.95],
+        carpet:      [0.08, 0.24, 0.57, 0.69, 0.71, 0.73],
+        glass:       [0.18, 0.06, 0.04, 0.03, 0.02, 0.02]
+    };
+    const freqBands = [125, 250, 500, 1000, 2000, 4000];
+
+    // ==========================================
+    // 3. إدارة اللغة (Language Manager)
+    // ==========================================
+    let currentLang = 'ar';
+
+    function t(key) {
+        return translations[currentLang][key] || key;
+    }
+
+    function setLanguage(lang) {
+        currentLang = lang;
+        const htmlRoot = document.getElementById('htmlRoot');
+        htmlRoot.lang = lang;
+        htmlRoot.dir = (lang === 'ar') ? 'rtl' : 'ltr';
+        document.title = t('pageTitle');
+
+        // تحديث جميع العناصر ذات data-i18n
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+            el.textContent = t(el.getAttribute('data-i18n'));
+        });
+        document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+            el.placeholder = t(el.getAttribute('data-i18n-placeholder'));
+        });
+
+        // تحديث أزرار اللغة النشطة
+        document.querySelectorAll('.lang-btn').forEach(btn => {
+            btn.classList.toggle('active', btn.getAttribute('data-lang') === lang);
+        });
+
+        // إعادة توليد التقرير إذا كان موجوداً
+        if (document.getElementById('reportOutput').classList.contains('active')) {
+            generateStudio();
+        }
+    }
+
+    // ==========================================
+    // 4. دوال الرسم والتحليل
+    // ==========================================
+    function drawStudioLayout(L, W, H, micCount) {
+        const canvasW = 800, canvasH = 500, padding = 60;
+        const maxDim = Math.max(L, W);
+        const scale = Math.min((canvasW - padding * 2) / maxDim, (canvasH - padding * 2) / maxDim);
+        const roomW = W * scale, roomH = L * scale;
+        const offsetX = (canvasW - roomW) / 2, offsetY = (canvasH - roomH) / 2;
+
+        const isRtl = currentLang === 'ar';
+        const labels = {
+            controlDesk: isRtl ? 'طاولة التحكم' : currentLang === 'fr' ? 'Console' : 'Control Desk',
+            window: isRtl ? 'نافذة عازلة' : currentLang === 'fr' ? 'Fenêtre Isolante' : 'Isolation Window',
+            recording: isRtl ? `منطقة التسجيل (${micCount} ميكروفون)` : currentLang === 'fr' ? `Zone d'Enregistrement (${micCount})` : `Recording Area (${micCount} mics)`,
+            meters: isRtl ? 'م' : 'm'
+        };
+
+        let svg = `<svg id="studioCanvas" viewBox="0 0 ${canvasW} ${canvasH}" xmlns="http://www.w3.org/2000/svg">`;
+        svg += `<rect x="${offsetX}" y="${offsetY}" width="${roomW}" height="${roomH}" fill="#1e293b" stroke="#3b82f6" stroke-width="4"/>`;
+        
+        const ft = 12;
+        svg += `<rect x="${offsetX}" y="${offsetY}" width="${ft}" height="${roomH}" fill="#334155"/>`;
+        svg += `<rect x="${offsetX + roomW - ft}" y="${offsetY}" width="${ft}" height="${roomH}" fill="#334155"/>`;
+        svg += `<rect x="${offsetX}" y="${offsetY}" width="${roomW}" height="${ft}" fill="#334155"/>`;
+        
+        const windowY = offsetY + roomH * 0.45;
+        const windowW = roomW * 0.6;
+        const windowX = offsetX + (roomW - windowW) / 2;
+        svg += `<rect x="${windowX}" y="${windowY}" width="${windowW}" height="6" fill="#0ea5e9" rx="3"/>`;
+        svg += `<text x="${windowX + windowW/2}" y="${windowY - 8}" fill="#94a3b8" font-size="10" text-anchor="middle">${labels.window}</text>`;
+
+        const deskW = roomW * 0.5, deskH = roomH * 0.15;
+        const deskX = offsetX + (roomW - deskW) / 2, deskY = offsetY + roomH * 0.15;
+        svg += `<rect x="${deskX}" y="${deskY}" width="${deskW}" height="${deskH}" fill="#4ade80" rx="4"/>`;
+        svg += `<text x="${deskX + deskW/2}" y="${deskY + deskH/2 + 4}" fill="#000" font-size="12" font-weight="bold" text-anchor="middle">${labels.controlDesk}</text>`;
+        
+        const spkSize = 12;
+        svg += `<circle cx="${deskX + 10}" cy="${deskY - 8}" r="${spkSize}" fill="#facc15"/>`;
+        svg += `<circle cx="${deskX + deskW - 10}" cy="${deskY - 8}" r="${spkSize}" fill="#facc15"/>`;
+
+        const micAreaY = offsetY + roomH * 0.65;
+        const micSpacing = roomW / (micCount + 1);
+        for (let i = 1; i <= micCount; i++) {
+            const micX = offsetX + (micSpacing * i);
+            svg += `<circle cx="${micX}" cy="${micAreaY}" r="10" fill="#ef4444" stroke="#fff" stroke-width="2"/>`;
+            svg += `<text x="${micX}" y="${micAreaY + 4}" fill="#fff" font-size="10" font-weight="bold" text-anchor="middle">${i}</text>`;
+            svg += `<circle cx="${micX}" cy="${micAreaY + 25}" r="6" fill="#64748b"/>`;
+        }
+        svg += `<text x="${offsetX + roomW/2}" y="${micAreaY + 50}" fill="#94a3b8" font-size="12" text-anchor="middle">${labels.recording}</text>`;
+
+        svg += `<line x1="${offsetX}" y1="${offsetY - 15}" x2="${offsetX + roomW}" y2="${offsetY - 15}" stroke="#fff" stroke-width="1.5"/>`;
+        svg += `<text x="${offsetX + roomW/2}" y="${offsetY - 25}" fill="#fff" font-size="12" text-anchor="middle">${W} ${labels.meters}</text>`;
+        
+        svg += `<line x1="${offsetX - 15}" y1="${offsetY}" x2="${offsetX - 15}" y2="${offsetY + roomH}" stroke="#fff" stroke-width="1.5"/>`;
+        svg += `<text x="${offsetX - 25}" y="${offsetY + roomH/2}" fill="#fff" font-size="12" text-anchor="middle" transform="rotate(-90, ${offsetX - 25}, ${offsetY + roomH/2})">${L} ${labels.meters}</text>`;
+
+        svg += `</svg>`;
+        return svg;
+    }
+
+    function drawModeGraph(L, W, H) {
+        const canvas = document.getElementById('modeGraph');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        
+        const dpr = window.devicePixelRatio || 1;
+        const rect = canvas.getBoundingClientRect();
+        canvas.width = rect.width * dpr;
+        canvas.height = rect.height * dpr;
+        ctx.scale(dpr, dpr);
+        
+        const w = rect.width;
+        const h = rect.height;
+        const c = 343;
+
+        let modes = [];
+        for (let p = 1; p <= 5; p++) modes.push({ f: (c/2)*(p/L), type: 'Length' });
+        for (let q = 1; q <= 5; q++) modes.push({ f: (c/2)*(q/W), type: 'Width' });
+        for (let r = 1; r <= 5; r++) modes.push({ f: (c/2)*(r/H), type: 'Height' });
+        modes = modes.filter(m => m.f <= 300).sort((a,b) => a.f - b.f);
+
+        ctx.fillStyle = '#111827';
+        ctx.fillRect(0, 0, w, h);
+
+        ctx.strokeStyle = '#334155';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(40, h - 30);
+        ctx.lineTo(w - 20, h - 30);
+        ctx.stroke();
+
+        ctx.fillStyle = '#64748b';
+        ctx.font = '10px Cairo, Inter';
+        ctx.textAlign = 'center';
+        for (let f = 0; f <= 300; f += 50) {
+            const x = 40 + (f / 300) * (w - 60);
+            ctx.beginPath();
+            ctx.moveTo(x, h - 30);
+            ctx.lineTo(x, h - 25);
+            ctx.stroke();
+            ctx.fillText(f + 'Hz', x, h - 10);
+        }
+
+        modes.forEach(m => {
+            const x = 40 + (m.f / 300) * (w - 60);
+            const barHeight = 40 + Math.random() * 40;
+            
+            ctx.beginPath();
+            ctx.moveTo(x, h - 30);
+            ctx.lineTo(x, h - 30 - barHeight);
+            ctx.strokeStyle = m.type === 'Length' ? '#ef4444' : m.type === 'Width' ? '#3b82f6' : '#10b981';
+            ctx.lineWidth = 3;
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.arc(x, h - 30 - barHeight, 4, 0, Math.PI * 2);
+            ctx.fillStyle = m.type === 'Length' ? '#ef4444' : m.type === 'Width' ? '#3b82f6' : '#10b981';
+            ctx.fill();
+        });
+
+        // Legend (يعتمد على اتجاه الصفحة)
+        const isRtl = currentLang === 'ar';
+        ctx.textAlign = isRtl ? 'left' : 'right';
+        const legendX = isRtl ? 20 : w - 20;
+        ctx.fillStyle = '#ef4444'; ctx.fillText(t('graphLegendLength'), legendX, 20);
+        ctx.fillStyle = '#3b82f6'; ctx.fillText(t('graphLegendWidth'), legendX, 35);
+        ctx.fillStyle = '#10b981'; ctx.fillText(t('graphLegendHeight'), legendX, 50);
+    }
+
+    function calculateDetailedAcoustics(L, W, H, budgetLevel) {
+        const V = L * W * H;
+        const S_walls = 2 * (L * H) + 2 * (W * H);
+        const S_floor = L * W;
+        const S_ceiling = L * W;
+        const S_total = S_walls + S_floor + S_ceiling;
+
+        let matWall = absorptionCoeffs.foamPyramid;
+        let matFloor = absorptionCoeffs.carpet;
+        let matCeiling = absorptionCoeffs.foamPyramid;
+        
+        if (budgetLevel === 'entry') {
+            matWall = [0.10, 0.20, 0.40, 0.60, 0.70, 0.70];
+            matCeiling = [0.10, 0.20, 0.40, 0.60, 0.70, 0.70];
+        }
+
+        const rt60Bands = [];
+        for (let i = 0; i < 6; i++) {
+            const totalAbsorption = (S_walls * matWall[i]) + (S_floor * matFloor[i]) + (S_ceiling * matCeiling[i]) + (1.2 * absorptionCoeffs.glass[i]);
+            const alphaAvg = totalAbsorption / S_total;
+            const rt = alphaAvg > 0 ? (0.161 * V) / (S_total * alphaAvg) : 0;
+            rt60Bands.push(rt);
+        }
+
+        const avgRt60 = rt60Bands.reduce((a, b) => a + b, 0) / 6;
+        const schroeder = 2000 * Math.sqrt(V / S_total);
+        
+        const panelsNeeded = Math.ceil((S_walls * 0.4) / 0.25);
+        const bassTrapsNeeded = 4;
+
+        const ratios = [L/W, H/W].sort();
+        const idealRatios = [1.14, 1.39];
+        
+        let ratioStatus, ratioMsg;
+        if (Math.abs(ratios[0] - idealRatios[0]) > 0.15 || Math.abs(ratios[1] - idealRatios[1]) > 0.15) {
+            ratioStatus = t('ratioStatusWarning');
+            ratioMsg = t('warnRatioMsg');
+        } else {
+            ratioStatus = t('ratioStatusExcellent');
+            ratioMsg = t('okRatioMsg');
+        }
+
+        return { V, S_total, avgRt60, rt60Bands, schroeder, panelsNeeded, bassTrapsNeeded, ratioStatus, ratioMsg };
+    }
+
+    // ==========================================
+    // 5. الدالة الرئيسية
+    // ==========================================
+    function generateStudio() {
+        const useCase = document.getElementById('useCase').value;
+        const budget = document.getElementById('budget').value;
+        const L = parseFloat(document.getElementById('roomLength').value) || 4;
+        const W = parseFloat(document.getElementById('roomWidth').value) || 4;
+        const H = parseFloat(document.getElementById('roomHeight').value) || 3;
+        const micCount = parseInt(document.getElementById('micCount').value);
+
+        const gear = gearDB[useCase][budget];
+        const acoustics = calculateDetailedAcoustics(L, W, H, budget);
+        const svgLayout = drawStudioLayout(L, W, H, micCount);
+
+        let rt60TableRows = "";
+        freqBands.forEach((freq, i) => {
+            let rating = acoustics.rt60Bands[i] < 0.3 ? t('ratingExcellent') : acoustics.rt60Bands[i] < 0.5 ? t('ratingGood') : t('ratingNeedsImprovement');
+            rt60TableRows += `
+                <tr>
+                    <td>${freq} Hz</td>
+                    <td>${acoustics.rt60Bands[i].toFixed(3)}</td>
+                    <td>${rating}</td>
+                </tr>
+            `;
+        });
+
+        const reportHTML = `
+            <div class="report-section">
+                <div style="background: #111827; border-radius: 12px; border: 1px solid var(--border); padding: 20px; text-align: center;">
+                    ${svgLayout}
+                </div>
+            </div>
+
+            <div class="report-section">
+                <h3>${t('secProjectSummary')}</h3>
+                <div class="data-grid">
+                    <div class="data-card"><div class="value">${L} × ${W} × ${H}</div><div class="label">${t('labelDimensionsShort')}</div></div>
+                    <div class="data-card"><div class="value">${acoustics.V.toFixed(2)}</div><div class="label">${t('labelRoomVolume')} (m³)</div></div>
+                    <div class="data-card"><div class="value">${acoustics.S_total.toFixed(2)}</div><div class="label">${t('labelTotalArea')} (m²)</div></div>
+                    <div class="data-card"><div class="value">${micCount}</div><div class="label">${t('labelMicNumber')}</div></div>
+                </div>
+            </div>
+
+            <div class="report-section">
+                <h3>${t('secAcousticAnalysis')}</h3>
+                <div class="data-grid" style="margin-bottom: 15px;">
+                    <div class="data-card"><div class="value">${acoustics.avgRt60.toFixed(3)} s</div><div class="label">${t('labelAvgRt60')}</div></div>
+                    <div class="data-card"><div class="value">${acoustics.schroeder.toFixed(1)} Hz</div><div class="label">${t('labelSchroeder')}</div></div>
+                    <div class="data-card"><div class="value" style="color: ${acoustics.ratioStatus === t('ratioStatusWarning') ? 'var(--danger)' : 'var(--accent)'}">${acoustics.ratioStatus}</div><div class="label">${t('labelRatioStatus')}</div></div>
+                </div>
+                <p style="margin-bottom: 10px; font-size: 0.95rem;"><strong>${t('ratioLabel')}</strong> ${acoustics.ratioMsg}</p>
+                
+                <div class="graph-container">
+                    <h4 style="color: var(--text-muted); margin-bottom: 10px; font-size: 0.9rem;">${t('graphTitle')}</h4>
+                    <canvas id="modeGraph"></canvas>
+                </div>
+
+                <table>
+                    <thead>
+                        <tr><th>${t('tableFreqHeader')}</th><th>${t('tableRt60Header')}</th><th>${t('tableRatingHeader')}</th></tr>
+                    </thead>
+                    <tbody>${rt60TableRows}</tbody>
+                </table>
+            </div>
+
+            <div class="report-section page-break">
+                <h3>${t('secTreatmentQty')}</h3>
+                <ul class="gear-list">
+                    <li>
+                        <div><div class="gear-name">${t('materialFoam')}</div><div class="gear-desc">${t('materialFoamDesc')}</div></div>
+                        <div class="gear-tag essential">${acoustics.panelsNeeded} ${t('materialFoamUnit')}</div>
+                    </li>
+                    <li>
+                        <div><div class="gear-name">${t('materialBass')}</div><div class="gear-desc">${t('materialBassDesc')}</div></div>
+                        <div class="gear-tag essential">${acoustics.bassTrapsNeeded} ${t('materialBassUnit')}</div>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="report-section">
+                <h3>${t('secGearList')}</h3>
+                <ul class="gear-list">
+                    <li><div><div class="gear-name">${gear.mic[currentLang]}</div><div class="gear-desc">${t('gearMicDesc')}</div></div><div class="gear-tag essential">${t('tagEssential')}</div></li>
+                    <li><div><div class="gear-name">${gear.interface[currentLang]}</div><div class="gear-desc">${t('gearInterfaceDesc')}</div></div><div class="gear-tag essential">${t('tagEssential')}</div></li>
+                    <li><div><div class="gear-name">${gear.monitors[currentLang]}</div><div class="gear-desc">${t('gearMonitorsDesc')}</div></div><div class="gear-tag essential">${t('tagEssential')}</div></li>
+                    <li><div><div class="gear-name">${t('materialFoam')} + ${t('materialBass')}</div><div class="gear-desc">${t('gearTreatmentDesc')}</div></div><div class="gear-tag essential">${t('tagRequired')}</div></li>
+                    <li><div><div class="gear-name">${gear.extra[currentLang]}</div><div class="gear-desc">${t('gearExtraDesc')}</div></div><div class="gear-tag">${t('tagRecommended')}</div></li>
+                </ul>
+            </div>
+
+            <div class="report-section">
+                <h3>${t('secChecklist')}</h3>
+                <ul class="checklist" id="setupChecklist">
+                    <li onclick="toggleCheck(this)"><input type="checkbox"> <span>${t('checkBassTraps')}</span></li>
+                    <li onclick="toggleCheck(this)"><input type="checkbox"> <span>${t('checkFoam')}</span></li>
+                    <li onclick="toggleCheck(this)"><input type="checkbox"> <span>${t('checkCarpet')}</span></li>
+                    <li onclick="toggleCheck(this)"><input type="checkbox"> <span>${t('checkXlr')}</span></li>
+                    <li onclick="toggleCheck(this)"><input type="checkbox"> <span>${t('checkUsb')}</span></li>
+                    <li onclick="toggleCheck(this)"><input type="checkbox"> <span>${t('checkMonitors')}</span></li>
+                    <li onclick="toggleCheck(this)"><input type="checkbox"> <span>${t('checkGain')}</span></li>
+                    <li onclick="toggleCheck(this)"><input type="checkbox"> <span>${t('checkTest')}</span></li>
+                </ul>
+            </div>
+        `;
+
+        const outputPanel = document.getElementById('outputPanel');
+        outputPanel.innerHTML = reportHTML;
+        outputPanel.classList.add('active');
+        document.getElementById('printBtn').style.display = 'flex';
+
+        setTimeout(() => drawModeGraph(L, W, H), 100);
+    }
+
+    function toggleCheck(li) {
+        const checkbox = li.querySelector('input[type="checkbox"]');
+        checkbox.checked = !checkbox.checked;
+        li.classList.toggle('completed', checkbox.checked);
+    }
+
+    // تشغيل تلقائي
+    window.onload = function() {
+        setLanguage('ar');
+        generateStudio();
+    };
+</script>
+
+</body>
+</html>
